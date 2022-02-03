@@ -10,7 +10,7 @@ const empleadosRouter = require('./router/empleados.router');
 const db = require('./db');
 const logger = require('./middlewares/logger.middleware');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const server = express();
 

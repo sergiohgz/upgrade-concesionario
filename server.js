@@ -1,3 +1,4 @@
+const config = require('./config');
 const express = require('express');
 const passport = require('passport');
 require('./authentication/passport');
@@ -10,12 +11,12 @@ const empleadosRouter = require('./router/empleados.router');
 const db = require('./db');
 const logger = require('./middlewares/logger.middleware');
 
-const PORT = process.env.PORT || 3000;
+const PORT = config.PORT;
 
 const server = express();
 
 // Configuramos el secreto de JWT en Express
-server.set('jwt-secret', 'secreto-para-desarrollo');
+server.set('jwt-secret', config.JWT_SECRET);
 
 // Añadimos los middlewares para poder leer los body
 server.use(express.json());

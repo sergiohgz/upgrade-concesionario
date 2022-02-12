@@ -1,6 +1,9 @@
 const multer = require('multer');
 const path = require('path');
 
+const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);
@@ -24,4 +27,25 @@ const upload = multer({
     },
 });
 
-module.exports = { upload };
+// middleware para subir archivos a cloudinary
+const uploadToCloudinary = async (req, res, next) => {
+    if (req.file) {
+        // Como el archivo existe, vamos a subirlo
+        try {
+            const filePath = req.file.path;
+            // Subimos imagen a cloudinary
+            const image = await cloudinary.uploader.upload(filePath);
+            // Como la imagen ya está subida, no la necesitamos en el disco duro, asi que la eliminamos
+            fs.unlinkSync(filePath);
+            // Escribimos la URL con la que podemos obtener la imagen en la petición, para luego guardarla bien en DB
+            req.file_url = image.secure_url;
+            return next();
+        } catch(error) {
+            return next(error);
+        }
+    } else {
+        return next();
+    }
+};
+
+module.exports = { upload, uploadToCloudinary };

@@ -1,4 +1,7 @@
 const express = require('express');
+const imageToUri = require('image-to-uri');
+const fs = require('fs');
+const { upload } = require('../middlewares/file.middleware');
 const Empleado = require('../models/Empleado');
 
 const empleadosRouter = express.Router();
@@ -33,14 +36,17 @@ empleadosRouter.get('/:id', (req, res, next) => {
         });
 });
 
-empleadosRouter.post('/', (req, res, next) => {
+empleadosRouter.post('/', [upload.single('avatar')], (req, res, next) => {
+    const avatarPath = req.file.path ? req.file.path : undefined;
     const nuevoEmpleado = new Empleado({
         nombre: req.body.nombre,
         apellido: req.body.apellido,
         clientes: [],
+        avatar: imageToUri(avatarPath),
     })
     return nuevoEmpleado.save()
         .then(() => {
+            fs.unlinkSync(avatarPath);
             return res.status(201).json(nuevoEmpleado);
         })
         .catch(err => {

@@ -6,6 +6,7 @@ const empleadoSchema = new Schema({
     nombre: { type: String, required: true },
     apellido: { type: String },
     clientes: [{ type: mongoose.Types.ObjectId, ref: 'Cliente' }],
+    avatar: { type: String },
 }, {
     timestamps: true
 });

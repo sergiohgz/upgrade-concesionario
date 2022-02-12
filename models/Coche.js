@@ -7,6 +7,7 @@ const cocheSchema = new Schema({
     modelo: { type: String, required: true },
     annoFabricacion: { type: Number, required: true },
     ruedas: { type: Number }, // No es obligatorio
+    imagen: { type: String },
 }, {
     timestamps: true
 });

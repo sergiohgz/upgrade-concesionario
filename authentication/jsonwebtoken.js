@@ -11,7 +11,7 @@ const signIn = (usuario, secret) => {
             // ...
         },
         secret,
-        { expiresIn: '5m' }
+        { expiresIn: '1h' }
     );
 
     return token;

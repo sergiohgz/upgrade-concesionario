@@ -1,6 +1,7 @@
 const express = require('express');
 const Coche = require('../models/Coche');
 const auth = require('../middlewares/auth.middleware');
+const { upload } = require('../middlewares/file.middleware');
 
 const cochesRouter = express.Router();
 
@@ -88,14 +89,15 @@ cochesRouter.get('/:id', (req, res, next) => {
         });
 });
 
-cochesRouter.post('/', [auth.isAuthenticated], (req, res, next) => {
+cochesRouter.post('/', [auth.isAuthenticated, upload.single('imagen')], (req, res, next) => {
     console.log('Body recibido', req.body);
-    const nuevoCoche = new Coche(/*{
+    const imagenCoche = req.file ? req.file.filename : undefined;
+    const nuevoCoche = new Coche({
         marca: req.body.marca,
         modelo: req.body.modelo,
         annoFabricacion: req.body.annoFabricacion,
-    }*/
-    req.body);
+        imagen: imagenCoche,
+    });
 
     return nuevoCoche.save()
         .then(() => {
